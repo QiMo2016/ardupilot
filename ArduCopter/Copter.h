@@ -374,6 +374,9 @@ private:
     // Guided
     GuidedMode guided_mode;  // controls which controller is run (pos or vel)
 
+    // Cruise
+    CruiseMode cruise_mode;  //
+
     // RTL
     RTLState rtl_state;  // records state of rtl (initial climb, returning home, etc)
     bool rtl_state_complete; // set to true if the current state is completed
@@ -923,6 +926,16 @@ private:
     void avoid_adsb_run();
     bool avoid_adsb_set_velocity(const Vector3f& velocity_neu);
 
+    //巡航模式
+    bool cruise_init(bool ignore_checks);
+    void cruise_run();
+    void cruise_takeoff_run();
+    bool cruise_takeoff_start(float final_alt_above_home);
+    bool cruise_set_destination(const Vector3f& destination);
+    bool cruise_set_destination(const Location_Class& dest_loc);
+    void cruise_pos_control_start();
+    void cruise_pos_control_run();
+
     void ekf_check();
     bool ekf_over_threshold();
     void failsafe_ekf_event();
@@ -1080,6 +1093,7 @@ private:
     Location_Class terrain_adjusted_location(const AP_Mission::Mission_Command& cmd) const;
 
     bool do_guided(const AP_Mission::Mission_Command& cmd);
+    bool do_cruise(const AP_Mission::Mission_Command& cmd);
     void do_takeoff(const AP_Mission::Mission_Command& cmd);
     void do_nav_wp(const AP_Mission::Mission_Command& cmd);
     void do_land(const AP_Mission::Mission_Command& cmd);

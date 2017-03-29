@@ -806,6 +806,11 @@ void GCS_MAVLINK_Copter::handle_change_alt_request(AP_Mission::Mission_Command &
     // To-Do: update target altitude for loiter or waypoint controller depending upon nav mode
 }
 
+bool GCS_MAVLINK_Copter::handle_cruise_request(AP_Mission::Mission_Command &cmd)
+{
+    return copter.do_cruise(cmd);
+}
+
 void GCS_MAVLINK_Copter::packetReceived(const mavlink_status_t &status,
                                         mavlink_message_t &msg)
 {
@@ -1580,7 +1585,7 @@ void GCS_MAVLINK_Copter::handleMessage(mavlink_message_t* msg)
         mavlink_msg_set_position_target_local_ned_decode(msg, &packet);
 
         // exit if vehicle is not in Guided mode or Auto-Guided mode
-        if ((copter.control_mode != GUIDED) && !(copter.control_mode == AUTO && copter.auto_mode == Auto_NavGuided)) {
+        if ((copter.control_mode != GUIDED) && !(copter.control_mode == AUTO && copter.auto_mode == Auto_NavGuided)&& (copter.control_mode != CRUISE)) {
             break;
         }
 
@@ -1641,7 +1646,7 @@ void GCS_MAVLINK_Copter::handleMessage(mavlink_message_t* msg)
         } else if (pos_ignore && !vel_ignore && acc_ignore) {
             copter.guided_set_velocity(vel_vector);
         } else if (!pos_ignore && vel_ignore && acc_ignore) {
-            if (!copter.guided_set_destination(pos_vector)) {
+            if (!copter.guided_set_destination(pos_vector) || !copter.guided_set_destination(pos_vector)) {
                 result = MAV_RESULT_FAILED;
             }
         } else {

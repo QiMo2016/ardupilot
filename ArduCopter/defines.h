@@ -103,6 +103,7 @@ enum control_mode_t {
     THROW =        18,  // throw to launch mode using inertial/GPS system, no pilot input
     AVOID_ADSB =   19,  // automatic avoidance of obstacles in the macro scale - e.g. full-sized aircraft
     GUIDED_NOGPS = 20,  // guided mode but only accepts attitude and altitude
+	CRUISE=        21,  // 定速巡航，可以设置上升下降速度及水平速度
 };
 
 enum mode_reason_t {
@@ -208,6 +209,12 @@ enum GuidedMode {
     Guided_Velocity,
     Guided_PosVel,
     Guided_Angle,
+};
+
+// 定速巡航模式
+enum CruiseMode {
+	Cruise_TakeOff,
+	Cruise_WP,
 };
 
 // RTL states

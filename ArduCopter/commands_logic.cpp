@@ -1092,6 +1092,36 @@ bool Copter::do_guided(const AP_Mission::Mission_Command& cmd)
     return true;
 }
 
+// do_cruise - start cruise mode
+bool Copter::do_cruise(const AP_Mission::Mission_Command& cmd)
+{
+    // only process guided waypoint if we are in guided mode
+    if (control_mode != CRUISE ) {
+        return false;
+    }
+
+    // switch to handle different commands
+    switch (cmd.id) {
+
+        case MAV_CMD_NAV_WAYPOINT:
+        {
+            // set wp_nav's destination
+            Location_Class dest(cmd.content.location);
+            return cruise_set_destination(dest);
+        }
+
+        case MAV_CMD_CONDITION_YAW:
+            do_yaw(cmd);
+            return true;
+
+        default:
+            // reject unrecognised command
+            return false;
+    }
+
+    return true;
+}
+
 void Copter::do_change_speed(const AP_Mission::Mission_Command& cmd)
 {
     if (cmd.content.speed.target_ms > 0) {

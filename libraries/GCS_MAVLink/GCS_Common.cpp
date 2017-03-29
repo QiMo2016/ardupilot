@@ -820,6 +820,15 @@ bool GCS_MAVLINK::handle_mission_item(mavlink_message_t *msg, AP_Mission &missio
         goto mission_ack;
     }
 
+    if (current == 4) {
+        // current = 4 is a flag to tell us this is a "cruise mode"
+        // waypoint and not for the mission
+        result = (handle_cruise_request(cmd) ? MAV_MISSION_ACCEPTED
+                                             : MAV_MISSION_ERROR) ;
+        // verify we received the command
+        goto mission_ack;
+    }
+
     // Check if receiving waypoints (mission upload expected)
     if (!waypoint_receiving) {
         result = MAV_MISSION_ERROR;

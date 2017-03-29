@@ -367,6 +367,7 @@ private:
 
     virtual bool handle_guided_request(AP_Mission::Mission_Command &cmd) = 0;
     virtual void handle_change_alt_request(AP_Mission::Mission_Command &cmd) = 0;
+    virtual bool handle_cruise_request(AP_Mission::Mission_Command &cmd) = 0;
 
     void handle_log_request_list(mavlink_message_t *msg, DataFlash_Class &dataflash);
     void handle_log_request_data(mavlink_message_t *msg, DataFlash_Class &dataflash);

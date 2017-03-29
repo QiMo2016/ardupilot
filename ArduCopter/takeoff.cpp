@@ -13,6 +13,7 @@ bool Copter::current_mode_has_user_takeoff(bool must_navigate)
         case GUIDED:
         case LOITER:
         case POSHOLD:
+        case CRUISE:
             return true;
         case ALT_HOLD:
         case SPORT:
@@ -37,6 +38,12 @@ bool Copter::do_user_takeoff(float takeoff_alt_cm, bool must_navigate)
         switch(control_mode) {
             case GUIDED:
                 if (guided_takeoff_start(takeoff_alt_cm)) {
+                    set_auto_armed(true);
+                    return true;
+                }
+                return false;
+            case CRUISE:
+                if (cruise_takeoff_start(takeoff_alt_cm)) {
                     set_auto_armed(true);
                     return true;
                 }
