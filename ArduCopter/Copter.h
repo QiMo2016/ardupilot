@@ -130,6 +130,9 @@
 #include <SITL/SITL.h>
 #endif
 
+//加入高级指令类
+#include "command_advance.h"
+
 
 class Copter : public AP_HAL::HAL::Callbacks {
 public:
@@ -142,6 +145,7 @@ public:
     friend class AP_AdvancedFailsafe_Copter;
 #endif
     friend class AP_Arming_Copter;
+    friend class COMMAND_ADVANCE;
 
     Copter(void);
 
@@ -333,6 +337,19 @@ private:
         uint8_t compass     : 1;    // true if compass is healthy
         uint8_t primary_gps;        // primary gps index
     } sensor_health;
+
+    //高级指令
+    struct {
+    	uint16_t ID        ;    // true if baro is healthy
+        uint8_t repeat     ;    // true if compass is healthy
+        uint8_t leave_yaw;        // primary gps index
+        mavlink_command_long_t content;
+    } cmda;
+
+    COMMAND_ADVANCE advance;
+
+    void mavlinktocmda(mavlink_command_long_t mavlink);
+    void command_update();
 
     // Motor Output
 #if FRAME_CONFIG == HELI_FRAME

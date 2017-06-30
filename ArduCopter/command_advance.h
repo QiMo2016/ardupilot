@@ -37,7 +37,7 @@ public:
 
 private:
     void resolution();// 指令分解
-    void save();// 指令存储
+    //void save();// 指令存储
 
 };
 
