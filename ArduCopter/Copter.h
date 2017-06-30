@@ -100,6 +100,9 @@
 #include "AP_Rally.h"           // Rally point library
 #include "AP_Arming.h"
 
+//高级指令头文件
+#include "command_advance.h"
+
 // libraries which are dependent on #defines in defines.h and/or config.h
 #if SPRAYER == ENABLED
 #include <AC_Sprayer/AC_Sprayer.h>         // crop sprayer library
@@ -142,6 +145,7 @@ public:
     friend class AP_AdvancedFailsafe_Copter;
 #endif
     friend class AP_Arming_Copter;
+    friend class COMMAND_ADVANCE;
 
     Copter(void);
 
@@ -241,6 +245,18 @@ private:
     GCS_MAVLINK_Copter gcs_chan[MAVLINK_COMM_NUM_BUFFERS];
     GCS _gcs; // avoid using this; use gcs()
     GCS &gcs() { return _gcs; }
+
+    // 高级指令结构
+    struct command_advance{
+    	uint16_t ID;
+    	int repeat;
+    	uint8_t resolution;
+    	float leave_yaw;
+    	mavlink_command_long_t content;
+    } cmda;
+    // 高级指令
+    COMMAND_ADVANCE advance;
+    void mavlinktocmda(mavlink_command_long_t mavlink);
 
     // User variables
 #ifdef USERHOOK_VARIABLES
@@ -926,7 +942,7 @@ private:
     void avoid_adsb_run();
     bool avoid_adsb_set_velocity(const Vector3f& velocity_neu);
 
-    //巡航模式
+    // 巡航模式
     bool cruise_init(bool ignore_checks);
     void cruise_run();
     void cruise_takeoff_run();
@@ -935,6 +951,9 @@ private:
     bool cruise_set_destination(const Location_Class& dest_loc);
     void cruise_pos_control_start();
     void cruise_pos_control_run();
+
+    // 指令系统更新
+    void command_update();
 
     void ekf_check();
     bool ekf_over_threshold();

@@ -1089,12 +1089,17 @@ void GCS_MAVLINK_Copter::handleMessage(mavlink_message_t* msg)
             // param2 : speed during change [deg per second]
             // param3 : direction (-1:ccw, +1:cw)
             // param4 : relative offset (1) or absolute angle (0)
-            if ((packet.param1 >= 0.0f)   &&
+            if (((packet.param1 >= 0.0f)   &&
             	(packet.param1 <= 360.0f) &&
-            	(is_zero(packet.param4) || is_equal(packet.param4,1.0f))) {
+            	is_zero(packet.param4)) || ((packet.param1 >= 0.0f)   &&
+            	(packet.param1 < 180.0f) && is_equal(packet.param4,1.0f))) {
             	copter.set_auto_yaw_look_at_heading(packet.param1, packet.param2, (int8_t)packet.param3, (uint8_t)packet.param4);
                 result = MAV_RESULT_ACCEPTED;
-            } else {
+            } else if(packet.param1 >= 180.0f && is_equal(packet.param4,1.0f)){
+            	copter.cmda.ID=MAV_CMD_CONDITION_YAW;
+            	copter.mavlinktocmda(packet);
+            	result = MAV_RESULT_ACCEPTED;
+            }else{
                 result = MAV_RESULT_FAILED;
             }
             break;
